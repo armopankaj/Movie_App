@@ -17,6 +17,7 @@ const Movies = () => {
                         //if the movie name is too long them cutting it of to show 16 charaters only
                         return (
                             //it's all under the navlink to make it clickable
+                            //and passing the id to grab it in the single page view
                             <NavLink to={`movie/${id}`} key={id} >
                                 <div className='card'>
                                     <div className='card-info'>

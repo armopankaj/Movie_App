@@ -3,6 +3,7 @@ import { NavLink, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
 import { API_URL, API_KEY } from './context';
 const MovieDetails = () => {
+
     const { id } = useParams();
     const [isLoading, setIsLoading] = useState(true);
     const [movie, setMovie] = useState([]);
@@ -33,7 +34,7 @@ const MovieDetails = () => {
     //     }, 800);
     //     return () => clearTimeout(timeOut);
     // }, [query])
-    // // this is to load the default page for the first time
+    //Retrieving data according to the id 
     useEffect(() => {
         let timeOut = setTimeout(() => {
             getMovies(`https://api.themoviedb.org/3/movie/${id}${API_KEY}`);
@@ -41,7 +42,7 @@ const MovieDetails = () => {
         }, 800);
         return () => clearTimeout(timeOut);
     }, [id]);
-
+    //conditional statement to show the loading screen 
     if (isLoading) {
         return (
             <div className='movie-section'>
