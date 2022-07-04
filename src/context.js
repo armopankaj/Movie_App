@@ -3,13 +3,13 @@ import React, { useContext, useEffect, useState } from "react";
 
 export const API_KEY = `?api_key=55903b004b65252bf433fb4218601d2c`
 export const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1`
-export const SEARCH_URL = `https://api.themoviedb.org/3/search/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1&vote_average.gte=8.4`
+export const SEARCH_URL = `https://api.themoviedb.org/3/search/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1&vote_average.gte=8.4&query=`
 
 const AppContext = React.createContext()
 const AppProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [movie, setMovie] = useState([]);
-    //To display an error when the movie does not load
+    //To display an error when the movie does not load(have some error in this not displaying rightnow)
     const [isError, setIsError] = useState({ show: "false", msg: "" });
     const [query, setQuery] = useState('');
 
@@ -24,26 +24,16 @@ const AppProvider = ({ children }) => {
     }, [query])
 
 
-
-    // useEffect(() => {
-    //     let timeOut = setTimeout(() => {
-    //         getMovies(`${SEARCH_URL}&query=${query}`);
-
-    //     }, 800);
-    //     /
-    //     return () => clearTimeout(timeOut);
-    // }, [query])
-
-    // this is to load the default page for the first time
+    // this is to load the default page according to the query
     const displayMovies = async (query) => {
         if (query) {
-            const url = `https://api.themoviedb.org/3/search/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1&vote_average.gte=8.4&query=${query}`
+            const url = `${SEARCH_URL}${query}`
             const res = await fetch(url)
             const data = await res.json()
             setMovie(data.results)
         }
         else {
-            const url = 'https://api.themoviedb.org/3/discover/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1'
+            const url = `${API_URL}`
             const res = await fetch(url)
             const data = await res.json()
             setMovie(data.results)
