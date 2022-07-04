@@ -1,7 +1,7 @@
 import React from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react';
-import { API_URL, API_KEY } from './context';
+import { API_KEY } from './context';
 const MovieDetails = () => {
 
     const { id } = useParams();

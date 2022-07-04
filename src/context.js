@@ -12,48 +12,10 @@ const AppProvider = ({ children }) => {
     //To display an error when the movie does not load
     const [isError, setIsError] = useState({ show: "false", msg: "" });
     const [query, setQuery] = useState('');
-    const getMovies = async (url) => {
-        setIsLoading(true);
-        try {
-            const res = await fetch(url);
-            const data = await res.json();
-            console.log(data.results);
-            // console.log(res.status, "this is the status")
-            if (res.status === 200) {
-                setIsLoading(false);
-                setIsError({
-                    show: false,
-                    msg: "",
-                });
-                setMovie(data.results);
-            }
-            //Some error is coming have to check the condition where the movie not found is to be shown
-            else {
-                setIsError({
-                    show: true,
-                    msg: ''
-                });
-            }
-        } catch (error) {
-            console.log(error);
-        }
-
-    }
-    //to display the the movies that are present
 
     useEffect(() => {
         let timeOut = setTimeout(() => {
-            getMovies(`${API_URL}`);
-
-        }, 800);
-        return () => clearTimeout(timeOut);
-    }, [])
-
-
-
-    useEffect(() => {
-        let timeOut = setTimeout(() => {
-            getMovies(`${SEARCH_URL}&query=${query}`);
+            displayMovies(query);
 
         }, 800);
         //debouncing waiting before making an api call and if the user
@@ -61,7 +23,33 @@ const AppProvider = ({ children }) => {
         return () => clearTimeout(timeOut);
     }, [query])
 
+
+
+    // useEffect(() => {
+    //     let timeOut = setTimeout(() => {
+    //         getMovies(`${SEARCH_URL}&query=${query}`);
+
+    //     }, 800);
+    //     /
+    //     return () => clearTimeout(timeOut);
+    // }, [query])
+
     // this is to load the default page for the first time
+    const displayMovies = async (query) => {
+        if (query) {
+            const url = `https://api.themoviedb.org/3/search/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1&vote_average.gte=8.4&query=${query}`
+            const res = await fetch(url)
+            const data = await res.json()
+            setMovie(data.results)
+        }
+        else {
+            const url = 'https://api.themoviedb.org/3/discover/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc&page=1'
+            const res = await fetch(url)
+            const data = await res.json()
+            setMovie(data.results)
+        }
+
+    }
 
 
     // We are passing the variable to all the children where we can access and update them
@@ -71,7 +59,7 @@ const AppProvider = ({ children }) => {
 
 };
 
-//will be using this global context to access varibles
+//will be using this global context to access variables
 const useGlobalContext = () => {
     return useContext(AppContext);
 };
