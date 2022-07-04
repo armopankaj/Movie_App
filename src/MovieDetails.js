@@ -26,15 +26,7 @@ const MovieDetails = () => {
         }
 
     }
-    //to display the the movies that are present
-    // useEffect(() => {
-    //     let timeOut = setTimeout(() => {
-    //         getMovies(`${SEARCH_URL}&query=${query}`);
 
-    //     }, 800);
-    //     return () => clearTimeout(timeOut);
-    // }, [query])
-    //Retrieving data according to the id 
     useEffect(() => {
         let timeOut = setTimeout(() => {
             getMovies(`https://api.themoviedb.org/3/movie/${id}${API_KEY}`);
