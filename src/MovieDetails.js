@@ -21,6 +21,9 @@ const MovieDetails = () => {
                 setMovie(data);
                 // console.log(data)
             }
+            else {
+
+            }
         } catch (error) {
             console.log(error);
         }
