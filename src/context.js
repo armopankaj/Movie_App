@@ -1,5 +1,5 @@
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useCallback, useRef } from "react";
 
 export const API_KEY = '?api_key=55903b004b65252bf433fb4218601d2c'
 export const API_URL = 'https://api.themoviedb.org/3/discover/movie?api_key=55903b004b65252bf433fb4218601d2c&language=en-US&sort_by=popularity.desc'
@@ -16,13 +16,33 @@ const AppProvider = ({ children }) => {
     const [query, setQuery] = useState('');
     const [page, setPage] = useState(1);
 
-    const scrollToend = () => {
-        setPage((p) => {
-            return p + 1;
-        });
-        console.log('to check');
-        console.log(page);
-    }
+    // const scrollToend = () => 
+    // {
+    //     setPage((p) => {
+    //         return p + 1;
+    //     });
+    //     console.log('to check');
+    //     console.log(page);
+    // }
+
+
+    const observer = useRef()
+    const lastMovieCardRef = useCallback(lastMovie => {
+        if (isLoading) return //because in the case the api has not yet sent the results and we don't want to constantlyy call for 
+         
+        if (observer.current) observer.current.disconnect() //why this is done?
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                setPage(prevPage => prevPage + 1)
+            }
+
+        })
+        //if there is still a card to show we have to observe that
+        if (lastMovie) {
+            observer.current.observe(lastMovie)
+        }
+
+    }, [isLoading])
 
 
 
@@ -37,17 +57,20 @@ const AppProvider = ({ children }) => {
     }, [query, page])
 
 
-    useEffect(() => {
-        window.onscroll = function () {
-            if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
-                scrollToend();
-                console.log('inside window');
+    // useEffect(() => {
+    //     window.onscroll = function () {
+    //         if ((window.innerHeight + window.pageYOffset) >= document.body.offsetHeight) {
+    //             scrollToend();
+    //             // console.log('inside window');
 
 
-            }
-        }
+    //         }
+    //     }
 
-    }, [])
+    // }, [])
+
+
+
     // this is to load the default page according to the query
     const displayMovies = async (query) => {
         if (query) {
@@ -79,7 +102,7 @@ const AppProvider = ({ children }) => {
 
     }
     // We are passing the variable to all the children where we can access and update them
-    return (<AppContext.Provider value={{ isLoading, isError, movie, query, setQuery, setPage }}>
+    return (<AppContext.Provider value={{ isLoading, isError, movie, query, setQuery, setPage, lastMovieCardRef }}>
         {children}
     </AppContext.Provider>);
 
